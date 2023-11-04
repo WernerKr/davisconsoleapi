@@ -14,12 +14,15 @@ The data are stored in their own database, since most of the fields don't exist 
 
 Please note: This driver don't pull from the "Historic Data" API2, which 
 requires a paid monthly subscription from Davis to use (starting at about $4/month). 
+
 See here: https://weatherlink.github.io/v2-api/data-permissions
 
 ## Data
 Right now, the driver records all the information from the Davis Console API2,
 whereas the 
+
 current data are each 300 sec (5 min) updated 
+
 and the health data in current packet 
 health data are each 900 sec (15 min) updated
 so 2 times repeated
@@ -195,39 +198,59 @@ Example/Settings in the weewx.conf
 [Station]
 
     [[Services]]
+    
         #data_services = user.davisconsolehealthapi.DavisConsoleHealthAPI,
+        
 # this driver includes the console health data, so a extra data service isn't anymore necessary
+
 
 
 [StdReport]
 
     [[DavisConsole]]
+    
         HTML_ROOT = /var/www/html/weewx
+        
         lang = en
+        
         enable = true
+        
         skin = console
 
 
     [[DavisHealthConsole]]
+    
         HTML_ROOT = /var/www/html/weewx/healthc
+        
         lang = en
+        
         enable = true
+        
         skin = healthc
+        
 
 
 [DataBindings]
 
     [[wx_binding]]
+    
         database = davisconsoleapi_sqlite
+        
         table_name = archive
+        
         manager = weewx.manager.DaySummaryManager
+        
         schema = schemas.wview_davisconsoleapi.schema
 
 
 [Databases]
+
     [[davisconsoleapi_sqlite]]
+    
         database_type = SQLite
+        
         database_name = davisconsole.sdb
+        
 
 [DavisConsoleAPI]
     driver = user.davisconsoleapi

@@ -32,6 +32,7 @@ Example bar data:
   "bar_trend":-0.012
   "ts":1695724800
 
+
 Example inside data: 
   "temp_in":74.9
   "wet_bulb_in":61.9
@@ -134,6 +135,7 @@ Example ISS data:
   "ts":1695724800
   "packets_missed_streak":0
 
+
 Example health data
   "battery_voltage":4226
   "wifi_rssi":-56
@@ -165,6 +167,7 @@ Example health data
   "battery_temp":33                  it's not known if this is °C or what else (seems to be °C)
   "ts":1695724200
 
+
 ## Skin 
 In this installation there are also skin files (based on the Season skin) for 
     `console`
@@ -190,17 +193,20 @@ Example/Settings in the weewx.conf
 # this driver includes the console health data, so a extra data service isn't anymore necessary
 
 [StdReport]
+
     [[DavisConsole]]
         HTML_ROOT = /var/www/html/weewx
         lang = en
         enable = true
         skin = console
 
+
     [[DavisHealthConsole]]
         HTML_ROOT = /var/www/html/weewx/healthc
         lang = en
         enable = true
         skin = healthc
+
 
 [DataBindings]
     [[wx_binding]]

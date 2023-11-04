@@ -401,13 +401,13 @@ Settings for Davis Console skins:
 
 In skin.conf (example):
 
-        `[[[daysignalC]]]
+        [[[daysignalC]]]
         
             title = Signal Strength
             
             yscale = -100.0, -30.0, 10
             
-            [[[[rssiC]]]]`
+            [[[[rssiC]]]]
             
 
 This should give you a result like this:
@@ -415,5 +415,6 @@ This should give you a result like this:
 Take a look at the example files to see how that's been done so you can adapt it for your own purposes.
 
 https://www.pc-wetterstation.de/wetter/weewx7/index.html
+
 https://www.pc-wetterstation.de/wetter/weewx7/healthc/index.html
 

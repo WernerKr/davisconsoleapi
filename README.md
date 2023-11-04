@@ -194,7 +194,7 @@ By default, the installer installs `davisconsoleapi` as a driver.
 It runs during every archive interval and inserts data into the default SQL database.
 
 Example/Settings in the weewx.conf
-
+#
 [Station]
 
     [[Services]]
@@ -204,7 +204,7 @@ Example/Settings in the weewx.conf
 # this driver includes the console health data, so a extra data service isn't anymore necessary
 
 
-
+#
 [StdReport]
 
     [[DavisConsole]]
@@ -229,7 +229,7 @@ Example/Settings in the weewx.conf
         skin = healthc
         
 
-
+#
 [DataBindings]
 
     [[wx_binding]]
@@ -242,7 +242,7 @@ Example/Settings in the weewx.conf
         
         schema = schemas.wview_davisconsoleapi.schema
 
-
+#
 [Databases]
 
     [[davisconsoleapi_sqlite]]
@@ -251,8 +251,9 @@ Example/Settings in the weewx.conf
         
         database_name = davisconsole.sdb
         
-
+#
 [DavisConsoleAPI]
+
     driver = user.davisconsoleapi
     
     station_id = 1?????

@@ -201,9 +201,7 @@ Example/Settings in the weewx.conf
     
         #data_services = user.davisconsolehealthapi.DavisConsoleHealthAPI,
         
-# this driver includes the console health data, so a extra data service isn't anymore necessary
-
-
+this driver includes the console health data, so a extra data service isn't anymore necessary
 #
 [StdReport]
 

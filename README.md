@@ -358,7 +358,7 @@ Enter that number into weewx.conf and you should be good to go.
        v2 API URL: Historic (only availabe with paid subscription from Davis) so here not supported!
 
 ## Database schema
-This driver use it's own database schema
+This driver uses it's own database schema
 `wview_davisconsoleapi.py`
 
 ## Usage
@@ -366,14 +366,15 @@ Once you enable the driver and get it running, you won't notice anything differe
 
 ### Own skin console and healthc
 The files for this new skin (additional to the Seasons skin) are found under 
-skins/console
-skins/healthc
+`skins/console`
+`skins/healthc`
 
 The necessary file are there stored during the installation.
 Also the stanza in the weewx.conf
 
 
 Settings for Davis Console skins:
+
         [StdReport]
         
            [[DavisConsole]]

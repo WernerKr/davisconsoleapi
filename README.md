@@ -25,7 +25,9 @@ health data are each 900 sec (15 min) updated
 so 2 times repeated
 
 From DAVIS API2
+
 Example bar data:
+
   "bar_absolute":27.41
   "bar_sea_level":30.248
   "bar_offset":0
@@ -33,7 +35,8 @@ Example bar data:
   "ts":1695724800
 
 
-Example inside data: 
+Example inside data:
+
   "temp_in":74.9
   "wet_bulb_in":61.9
   "heat_index_in":74.7
@@ -43,6 +46,7 @@ Example inside data:
   "hum_in":48.4
 
 Example ISS data:
+
   "rx_state":0
   "wind_speed_hi_last_2_min":4
   "hum":64.6
@@ -137,6 +141,7 @@ Example ISS data:
 
 
 Example health data
+
   "battery_voltage":4226
   "wifi_rssi":-56
   "console_radio_version":"10.3.2.90"
@@ -188,9 +193,11 @@ It runs during every archive interval and inserts data into the default SQL data
 Example/Settings in the weewx.conf
 
 [Station]
+
     [[Services]]
         #data_services = user.davisconsolehealthapi.DavisConsoleHealthAPI,
 # this driver includes the console health data, so a extra data service isn't anymore necessary
+
 
 [StdReport]
 
@@ -209,11 +216,13 @@ Example/Settings in the weewx.conf
 
 
 [DataBindings]
+
     [[wx_binding]]
         database = davisconsoleapi_sqlite
         table_name = archive
         manager = weewx.manager.DaySummaryManager
         schema = schemas.wview_davisconsoleapi.schema
+
 
 [Databases]
     [[davisconsoleapi_sqlite]]
@@ -222,45 +231,85 @@ Example/Settings in the weewx.conf
 
 [DavisConsoleAPI]
     driver = user.davisconsoleapi
+    
     station_id = 1?????
+    
     # polling_interval = 300 # hardcoded 5 min 
+    
     api_key = ????????????????????????????????
+    
     api_secret = ????????????????????????????????
+    
     txid_iss = 1
+    
     txid_iss2 = None
+    
     txid_leaf = None
+    
     txid_soil = None
+    
     # a leaf_soil staion is autom. detected if None soil or leaf station is set
+    
     txid_extra1 = None      # yet not supported by Davis Console
+    
     txid_extra2 = None      # yet not supported by Davis Console
+    
     txid_extra3 = None      # yet not supported by Davis Console
+    
     txid_extra4 = None      # yet not supported by Davis Console
+    
     txid_rain = None        # seems that yet not supported by Davis Console
+    
     txid_wind = None        # supported ?
+    
     packet_log = 0
 
+    
+
 #packet_log = 0 -> none logging
+
 #packet_log = 1 -> check new Archive and Rain
+
 #packet_log = 2 -> current console (bar/temp/hum) packets
+
 #packet_log = 3 -> current ISS/VuE packets
+
 #packet_log = 4 -> current leaf soil packets
+
 #packet_log = 5 -> current extra_data1..4 packets
+
 #packet_log = 6 -> current rain and/or wind packets
+
 #packet_log = 7 -> current iss2 or vue2 packets
+
 #packet_log = 8 -> current health packets
+
 #packet_log = 9 -> all current packets
 
 
+
 [Accumulator]
+
    [[consoleRadioVersionC]]
+   
         accumulator = firstlast
+        
         extractor = last
+
+        
    [[consoleSwVersionC]]
         accumulator = firstlast
+        
         extractor = last
+        
+        
    [[consoleOsVersionC]]
+   
         accumulator = firstlast
+        
         extractor = last
+
+
 
 ### API keys
 Once installed, you need to add your Davis WeatherLink Cloud API key, station ID, and secret. 

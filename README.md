@@ -310,7 +310,7 @@ Example/Settings in the weewx.conf
 #packet_log = 9 -> all current packets
 
 
-
+#
 
 [Accumulator]
 

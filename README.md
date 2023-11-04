@@ -311,6 +311,7 @@ Example/Settings in the weewx.conf
 
 
 
+
 [Accumulator]
 
    [[consoleRadioVersionC]]
@@ -321,6 +322,7 @@ Example/Settings in the weewx.conf
 
         
    [[consoleSwVersionC]]
+   
         accumulator = firstlast
         
         extractor = last
@@ -331,6 +333,7 @@ Example/Settings in the weewx.conf
         accumulator = firstlast
         
         extractor = last
+
 
 
 
@@ -373,24 +376,39 @@ Also the stanza in the weewx.conf
 
 Settings for Davis Console skins:
         [StdReport]
+        
            [[DavisConsole]]
+           
               #HTML_ROOT = /var/www/html/weewx7/console
+              
               lang = en			# or lang = de
+              
               enable = true
+              
               skin = console
+              
 
           [[DavisHealthConsole]]
+          
              HTML_ROOT = /var/www/html/weewx/healthc
+             
              enable = true
+             
              lang = en			# or lang = de
+             
              skin = healthc 
+
 
 In skin.conf (example):
 
         [[[daysignalC]]]
+        
             title = Signal Strength
+            
             yscale = -100.0, -30.0, 10
+            
             [[[[rssiC]]]]
+            
 
 This should give you a result like this:
 

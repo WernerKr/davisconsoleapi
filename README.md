@@ -17,6 +17,31 @@ requires a paid monthly subscription from Davis to use (starting at about $4/mon
 
 See here: https://weatherlink.github.io/v2-api/data-permissions
 
+# You should know:
+- only from a Vantage VUE you can get data for 
+	'TX Battery Volt, Supercap Volt and Solar Panel Volt'
+
+If the current console data are not more updated (values flatlined), you need to do this ( is from support@davisinstruments.com )
+- REBOOT the unit (= Console):
+  Unplug the USB cable, and then insert a paper clip in to the hole labeled P (indicated as Power Off Access) 
+  for 10 seconds pressing the button inside.
+  -> is 'Power off' the Console -> Screen is than black!
+
+
+## Update from davisconsolehealthapi
+If you would like to use the data from davisconsolehealthapi: This driver includes the function (Health Data) of the davisconsolehealthapi extension.
+Copy the database file from the davisconsolehealthapi driver: 
+'davisconsolehealthapi.sdb'
+to the here used database:
+'davisconsole.sdb'
+
+With the file 'add_console.sh' you can extend the database to the here used database schema
+
+Maybe you need to modify in this files this settings:
+'--config=/etc/weewx/weewx.conf' 
+to your prefered setting
+
+
 ## Data
 Right now, the driver records all the information from the Davis Console API2,
 whereas the 
@@ -189,6 +214,17 @@ Install the extension:
 or
     `sudo wee_extension --install=davisconsoleapi.zip --config=/etc/weewx1/weewx.conf`
 
+     After the installation, the weewx.conf file must be adapted:
+     
+  -   [Station] station_type = DavisConsoleAPI 
+  -   [DataBindings] [[wx_binding]] database = davisconsoleapi_sqlite
+  -   [DataBindings] [[wx_binding]] schema = schemas.wview_davisconsoleapi.schema
+  -   [StdReport] [[SeasonsReport]] enable = false
+  -   [DavisConsoleAPI] station_id = %your station_id%
+  -   [DavisConsoleAPI] api_key = %your api2_key%
+  -   [DavisConsoleAPI] api_secret = %your api2_secret%
+  -   [DavisConsoleAPI] txid_iss = 1 	and the other stations, if available
+
 ## Configuration
 By default, the installer installs `davisconsoleapi` as a driver. 
 It runs during every archive interval and inserts data into the default SQL database.
@@ -270,7 +306,7 @@ this driver includes the console health data, so a extra data service isn't anym
     
     txid_soil = None
     
-    # a leaf_soil staion is autom. detected if None soil or leaf station is set
+    txid_leaf_soil = None
     
     txid_extra1 = None      # yet not supported by Davis Console
     

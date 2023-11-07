@@ -415,7 +415,7 @@ Settings for Davis Console skins:
         
            [[DavisConsole]]
            
-              #HTML_ROOT = /var/www/html/weewx7/console
+              #HTML_ROOT = /var/www/html/weewx/console
               
               lang = en			# or lang = de
               

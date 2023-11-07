@@ -210,9 +210,9 @@ with englisch and german language support files
 ## Installation
 Install the extension:
 
-    `sudo wee_extension --install davisconsoleapi.zip`
+    `sudo wee_extension --install=weewx-davisconsoleapi.zip`
 or
-    `sudo wee_extension --install=davisconsoleapi.zip --config=/etc/weewx1/weewx.conf`
+    `sudo wee_extension --install=weewx-davisconsoleapi.zip --config=/etc/weewx1/weewx.conf`
 
      After the installation, the weewx.conf file must be adapted:
      

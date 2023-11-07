@@ -15,12 +15,19 @@
                     ('ecowitt-client'),
                     ]
 
-## The list of observations determines which database fields will be shown in
-## the summary as well as the order in which they will be displayed.
-## observ-Array -> (1:value, 2:labelcolor, ''=black, 3:current or day or yesterday or aqiepa or aqieea or deltatime or wx_binding?, 4:'1')
-## 4:=1, show, 4:=0 don't show, although values are available, 3 = Textinformation
-## 3: ='wx_binding?' -> example: 'wx_binding3, WS90' Data are from the Database settings 'wx_binding3' and here additional to the label is ' WS90' added
-##labelcolor can be general disabled -> #set $usefontcolor = 0
+## observ-Array -> 
+## (1:value, 2:labelcolor, ''=black, 3:current or day or yesterday or aqiepa or aqieea or trend or deltatime or wx_binding?, 4:'1')
+## 3: = current -> default
+## 3: = day -> show avages of the day
+## 3: = yesterday -> show avages of the last day
+## 3: = 3:yesterday -> at 1:radiation  -> radiation.energy_integral.kilowatt_hour_per_meter_squared for yesterday and day
+## 3: = trend -> show additonal to value the 24hr trend or 3 hr trend (barometer)
+## 3: = deltatime -> for sunShineDur or rainDur or hailDur
+## 3: = 'wx_binding?' -> example: 'wx_binding3, WS90' Data are from the Database settings 'wx_binding3' and here additional to the label is ' WS90' added
+## 3: = 'daywx_bindig?' or 'trendwx_bindging?' are also allowed. example: 'daywx_binding3, Ultrasonic'
+## 3: = aqiepa -> computes pm2_5 Air quality Index EPA
+## 3: = aqieea -> computes pm2_5 Air quality Index EEA
+## 4: = 1 show, 4: = 0 don't show, although values are available, 4: = 3 Textinformation or Separation
 
 
 #set $observ = [('outTemp','#e85d0d','trend','1'),
@@ -44,9 +51,6 @@
 ('pressure','','trend','1'),
 ('cloudbase','','current','1'),
 ('cdd_day','','current','1'),
-('cddc_day','','current','1'),
-('hdd_day','','current','1'),
-('hddc_day','','current','1'),
 ('- - - - - - - - - - - - - - - - - - - - -','','','3'),
 ('windSpeed','#0000ff','current','1'),
 ('windSpeed','#0000ff','wx_binding3, WS80','0'),
@@ -239,9 +243,6 @@
 ('THSW_2','','current','1'),
 ('THW_2','','current','1'),
 ('cdd_day_2','','current','1'),
-('cddc_day_2','','current','1'),
-('hdd_day_2','','current','1'),
-('hddc_day_2','','current','1'),
 ('UV_2','#E238EC','current','1'),
 ('radiation_2','#f2a265','current','1'),
 ('windSpeed_2','#0000ff','current','1'),
@@ -560,7 +561,12 @@
     #elif $x[0] == 'GTSdate'
       <tr>
         <td class="label"><span><font color=$color>$obs.label[$x[0]]</font></span></td>
-          <td class="data">$day.GTSdate.last.format("%d.%m.%Y")</td>
+        #try
+         #set $xt = $day.GTSdate.last.format("%d.%m.%Y") 
+        #except
+         #set $xt = "no GTS-ext"
+        #end try 
+          <td class="data">$xt</td>
       </tr>
     #elif 'sunshine_hours' in $x[0] 
       <tr>
@@ -571,18 +577,20 @@
       </tr>
     #elif $x[0] == 'radiation' and $x[2] == 'yesterday'
       <tr>
+       #try
         <td class="label"><span><font color=$color>$obs.label.energy_integral $obs.label.yesterday</font></span></td>
-        #try
-          <td class="data">$yesterday.radiation.energy_integral.kilowatt_hour_per_meter_squared</td>
-        #except 
+        <td class="data">$yesterday.radiation.energy_integral.kilowatt_hour_per_meter_squared</td>
+        #except
+          <td class="label"><span><font color=$color>energy_integral</font></span></td>
           <td class="data">No GTS-ext</td>
         #end try
       </tr>
       <tr>
-        <td class="label"><span><font color=$color>$obs.label.energy_integral $obs.label.today</font></span></td>
         #try
+        <td class="label"><span><font color=$color>$obs.label.energy_integral $obs.label.today</font></span></td>
           <td class="data">$day.radiation.energy_integral.kilowatt_hour_per_meter_squared</td>
-        #except 
+        #except
+          <td class="label"><span><font color=$color>energy_integral</font></span></td> 
           <td class="data">No GTS-ext</td>
         #end try
      </tr>
@@ -603,6 +611,54 @@
         <td class="label"><span><font color=$color>$obs.label[$x[0]]</font></span></td>
         <td class="data">$xt.gram_per_meter_cubed</td>
         ##<td class="data">$latest.outHumAbs.gram_per_meter_cubed</td>
+      </tr>
+    #elif $x[0] == 'cdd_day'
+       #set $xt1 = $unit.label.outTemp
+       #set $xt2 = $xt.raw
+       #if $xt1 == "°F"
+        #if $xt2 > 0 
+         #set $xt = getattr($latest, 'cdd_day')
+         #set $txt = 'cdd_day'
+        #else 
+         #set $xt = getattr($latest, 'hdd_day')
+         #set $txt = 'hdd_day'
+        #end if
+       #else
+        #if $xt2 > 0 
+         #set $xt = getattr($latest, 'cddc_day')
+         #set $txt = 'cddc_day'
+        #else 
+         #set $xt = getattr($latest, 'hddc_day')
+         #set $txt = 'hddc_day'
+        #end if
+       #end if
+      <tr>
+        <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
+        <td class="data">$xt</td>
+      </tr>
+    #elif $x[0] == 'cdd_day_2'
+       #set $xt1 = $unit.label.outTemp_2
+       #set $xt2 = $xt.raw
+       #if $xt1 == "°F"
+        #if $xt2 > 0 
+         #set $xt = getattr($latest, 'cdd_day_2')
+         #set $txt = 'cdd_day_2'
+        #else 
+         #set $xt = getattr($latest, 'hdd_day_2')
+         #set $txt = 'hdd_day_2'
+        #end if
+       #else
+        #if $xt2 > 0 
+         #set $xt = getattr($latest, 'cddc_day_2')
+         #set $txt = 'cddc_day_2'
+        #else 
+         #set $xt = getattr($latest, 'hddc_day_2')
+         #set $txt = 'hddc_day_2'
+        #end if
+       #end if
+      <tr>
+        <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
+        <td class="data">$xt</td>
       </tr>
     #else
       <tr>

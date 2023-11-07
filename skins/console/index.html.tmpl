@@ -95,8 +95,12 @@
             <img src="daytempfeel.png"  alt="$obs.label.feel" />
             <img src="dayhum.png"       alt="$obs.label.outHumidity" />
             <img src="daywind.png"      alt="$obs.label.windSpeed" />
-            <img src="daywinddir.png"   alt="$obs.label.windDir" />
-            <img src="daywinddir1.png"   alt="$obs.label.windDir" />
+            #if $day.windDir.has_data
+             <img src="daywinddir.png"   alt="$obs.label.windDir" />
+            #end if
+            #if $day.windDir_2.has_data
+             <img src="daywinddir1.png"   alt="$obs.label.windDir_2" />
+            #end if
             <img src="daywindvec.png"   alt="$obs.label.windvec" />
             <img src="dayrain.png"      alt="$obs.label.rain" />
             <img src="dayrainbar.png"      alt="$obs.label.rain" />

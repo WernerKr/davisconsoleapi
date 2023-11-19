@@ -18,6 +18,10 @@
 weewx module that records information from a Davis Console weather station using
 the v2 API.
 
+version:
+01 initial release
+02 add dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
+03 add DAvis Airlink senosr, the Airlink health data are not stored in the database! 
 
 Settings in weewx.conf:
 
@@ -67,6 +71,7 @@ Settings in weewx.conf:
     txid_extra4 = None      # yet not supported by Davis Console
     txid_rain = None        # seems that yet not supported by Davis Console
     txid_wind = None        # supported ?
+    airlink = 0 		# Airlink Sensor available?
     packet_log = 0
 
 #packet_log = 0 -> none logging
@@ -155,7 +160,7 @@ except ImportError:
 
 
 DRIVER_NAME = "DavisConsoleAPI"
-DRIVER_VERSION = "0.1"
+DRIVER_VERSION = "0.3"
 
 if weewx.__version__ < "4":
     raise weewx.UnsupportedFeature("weewx 4 is required, found %s" % weewx.__version__)
@@ -316,7 +321,7 @@ weewx.units.obs_group_dict["UV_2"] = "group_uv"
 weewx.units.obs_group_dict["txBatteryStatus_2"] = "group_count"
 #weewx.units.obs_group_dict["signal1_2"] = "group_count"
 weewx.units.obs_group_dict["rain_2"] = "group_rain"
-weewx.units.obs_group_dict["rainRate_2"] = "group_rain"
+weewx.units.obs_group_dict["rainRate_2"] = "group_rainrate"
 weewx.units.obs_group_dict["stormRain_2"] = "group_rain"
 weewx.units.obs_group_dict["stormRainlast_2"] = "group_rain"
 weewx.units.obs_group_dict["rain15_2"] = "group_rain"
@@ -343,6 +348,8 @@ weewx.units.obs_group_dict["resyncs_2"] = "group_count"
 weewx.units.obs_group_dict["supercapVolt_2"] = "group_volt"
 weewx.units.obs_group_dict["solarVolt_2"] = "group_volt"
 weewx.units.obs_group_dict["txBatteryVolt_2"] = "group_volt"
+
+weewx.units.obs_group_dict["windrun_2"] = "group_distance"
 
 weewx.units.obs_group_dict["afc2"] = "group_count"
 weewx.units.obs_group_dict["txID2"] = "group_count"
@@ -430,7 +437,13 @@ weewx.units.MetricUnits["group_hdd"] = "hdd"
 weewx.units.MetricWXUnits["group_hdd"] = "hdd"
 weewx.units.default_unit_format_dict["hdd"] = "%.3f"
 weewx.units.default_unit_label_dict["hdd"] = " "
-weewx.units.obs_group_dict["cdd_day"] = "group_hdd"
+
+#    "cooldeg"           : "group_degree_day",
+#    "heatdeg"           : "group_degree_day",
+#    "group_degree_day"  : "degree_F_day",
+#    "group_degree_day"  : "degree_C_day",
+
+weewx.units.obs_group_dict["cdd_day"] = "group_hdd" 	
 weewx.units.obs_group_dict["hdd_day"] = "group_hdd"
 weewx.units.obs_group_dict["cdd_day_2"] = "group_hdd"
 weewx.units.obs_group_dict["hdd_day_2"] = "group_hdd"
@@ -438,6 +451,46 @@ weewx.units.obs_group_dict["cddc_day"] = "group_hdd"
 weewx.units.obs_group_dict["hddc_day"] = "group_hdd"
 weewx.units.obs_group_dict["cddc_day_2"] = "group_hdd"
 weewx.units.obs_group_dict["hddc_day_2"] = "group_hdd"
+
+#weewx.units.obs_group_dict['co2_Temp'] = 'group_temperature'
+#weewx.units.obs_group_dict['dew_point'] = 'group_temperature'
+#weewx.units.obs_group_dict['wet_bulb'] = 'group_temperature'
+#weewx.units.obs_group_dict['heat_index'] = 'group_temperature'
+#weewx.units.obs_group_dict['co2_Hum'] = 'group_percent'
+
+weewx.units.obs_group_dict['pm10_0_nowcast'] = 'group_concentration'
+weewx.units.obs_group_dict['pm2_5_nowcast'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_2p5_last_1_hour'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_2p5_last_3_hours'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_2p5_last_24_hours'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_10_last_1_hour'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_10_last_3_hours'] = 'group_concentration'
+weewx.units.obs_group_dict['pm_10_last_24_hours'] = 'group_concentration'
+
+weewx.units.obs_group_dict['pct_pm_data_nowcast'] = 'group_percent'
+weewx.units.obs_group_dict['pct_pm_data_last_1_hour'] = 'group_percent'
+weewx.units.obs_group_dict['pct_pm_data_last_3_hours'] = 'group_percent'
+weewx.units.obs_group_dict['pct_pm_data_last_24_hours'] = 'group_percent'
+
+weewx.units.obs_group_dict["rssiA"] = "group_decibels"
+weewx.units.obs_group_dict["firmwareVersionA"] = "group_time"
+#weewx.units.obs_group_dict["bootloaderVersionA"] = "group_count"
+weewx.units.obs_group_dict["bootloaderVersionA"] = "group_time"
+weewx.units.obs_group_dict["localAPIQueriesA"] = "group_count"
+weewx.units.obs_group_dict["healthVersionA"] = "group_count"
+weewx.units.obs_group_dict["uptimeA"] = "group_deltatime"
+weewx.units.obs_group_dict["linkUptimeA"] = "group_deltatime"
+weewx.units.obs_group_dict["rxPacketsA"] = "group_count"
+weewx.units.obs_group_dict["txPacketsA"] = "group_count"
+weewx.units.obs_group_dict["errorPacketsA"] = "group_count"
+weewx.units.obs_group_dict["droppedPacketsA"] = "group_count"
+weewx.units.obs_group_dict["recordWriteCountA"] = "group_count"
+weewx.units.obs_group_dict["iFreeMemChunkA"] = "group_data"
+weewx.units.obs_group_dict["iFreeMemWatermA"] = "group_data"
+weewx.units.obs_group_dict["iUsedMemA"] = "group_data"
+weewx.units.obs_group_dict["iFreeMemA"] = "group_data"
+weewx.units.obs_group_dict["tUsedMemA"] = "group_data"
+weewx.units.obs_group_dict["tFreeMemA"] = "group_data"
 
 
 MM2INCH = 1 / 25.4
@@ -899,6 +952,8 @@ def decode_current_json(data, self):
     wind_data = None
     rain_data = None
     health_data = None
+    airlink_data = None
+    airlinkhealth_data = None
 
     c_packet = dict() 
 
@@ -1046,6 +1101,22 @@ def decode_current_json(data, self):
         if sensor.get('data_structure_type') == 27:
          self.tshealth = sensor["data"][0]["ts"]
          health_data = sensor
+
+        if sensor.get('data_structure_type') == 16:
+           airlink_data = sensor
+           logdbg("Found current Airlink data")
+           if self.airlink_found == False:
+                   loginf("Found current Airlink data")
+                   self.airlink_found = True
+
+        if sensor.get('data_structure_type') == 18:
+           airlinkhealth_data = sensor
+           logdbg("Found current Airlink Health data")
+           if self.airlinkhealth_found == False:
+                   loginf("Found current Airlink Health data")
+                   self.airlinkhealth_found = True
+
+
     except:   
        loginf("No Sensor data found")
        return c_packet
@@ -1694,6 +1765,43 @@ def decode_current_json(data, self):
         c_packet["monthET_2"] = values["et_month"]
         c_packet["yearET_2"] = values["et_year"]
 
+        if c_packet["outTemp_2"] is not None and c_packet["outHumidity_2"] is not None:
+           c_packet["humidex1"] = weewx.wxformulas.humidexF(c_packet["outTemp_2"], c_packet["outHumidity_2"])
+           if c_packet["windSpeed_2"] is not None:
+              c_packet["appTemp1"] = weewx.wxformulas.apptempF(c_packet["outTemp_2"], c_packet["outHumidity_2"],c_packet["windSpeed_2"])
+        if c_packet["windSpeed_2"] is not None:
+           c_packet["windrun_2"] = c_packet["windSpeed_2"] * 2.5 / 60.0 #(miles)
+
+    if airlink_data:
+        if self.packet_log == 5:
+           loginf("airlink_data: %s" % airlink_data)
+        values = airlink_data["data"][0]
+
+        #c_packet['last_report_time'] = values['last_report_time']
+        c_packet['co2_Temp'] = values['temp']
+        c_packet['co2_Hum'] = values['hum']
+        c_packet['dewpoint1'] = values['dew_point']
+        c_packet['wetbulb1'] = values['wet_bulb']
+        c_packet['heatindex1'] = values['heat_index']
+        c_packet['pct_pm_data_last_1_hour'] = values['pct_pm_data_1_hour']
+        c_packet['pct_pm_data_last_3_hours'] = values['pct_pm_data_3_hour']
+        c_packet['pct_pm_data_nowcast'] = values['pct_pm_data_nowcast']
+        c_packet['pct_pm_data_last_24_hours'] = values['pct_pm_data_24_hour']
+
+        c_packet['pm1_0'] = values['pm_1']
+        c_packet['pm2_5'] = values['pm_2p5']
+        c_packet['pm10_0'] = values['pm_10']
+
+        c_packet['pm_2p5_last_1_hour'] = values['pm_2p5_1_hour']
+        c_packet['pm_2p5_last_3_hours'] = values['pm_2p5_3_hour']
+        c_packet['pm_2p5_last_24_hours'] = values['pm_2p5_24_hour']
+
+        c_packet['pm_10_last_1_hour'] = values['pm_10_1_hour']
+        c_packet['pm_10_last_3_hours'] = values['pm_10_3_hour']
+        c_packet['pm_10_last_24_hours'] = values['pm_10_24_hour']
+
+        c_packet['pm2_5_nowcast'] = values['pm_2p5_nowcast']
+        c_packet['pm10_0_nowcast'] = values['pm_10_nowcast']
 
     if health_data:
         if self.health_found == False:
@@ -1732,6 +1840,41 @@ def decode_current_json(data, self):
         c_packet["consoleRadioVersionC"] = values["console_radio_version"]
         c_packet["consoleSwVersionC"] = values["console_sw_version"]
         c_packet["consoleOsVersionC"] = values["console_os_version"]
+
+
+    if airlinkhealth_data:
+        if self.airlinkhealth_found == False:
+           loginf("Found current Airlink Health data")
+           self.airlinkhealth_found = True
+
+        if self.packet_log == 8:
+           loginf("airlinkhealth_data: %s" % airlinkhealth_data)
+        values = airlinkhealth_data["data"][0]
+
+        c_packet["rssiA"] = values["wifi_rssi"]
+        c_packet["firmwareVersionA"] = values["firmware_version"]
+        #test = values["bootloader_version"]
+        #if test != None:
+        #   if test < 1000000000:
+        #      test = test + 1000000000
+        #c_packet["bootloaderVersionA"] = test
+        c_packet["bootloaderVersionA"] = values["bootloader_version"]
+        c_packet["iFreeMemChunkA"] = values["internal_free_mem_chunk_size"]
+        c_packet["iUsedMemA"] = values["internal_used_mem"]
+        c_packet["iFreeMemA"] = values["internal_free_mem"]
+        c_packet["tUsedMemA"] = values["total_used_mem"]
+        c_packet["tFreeMemA"] = values["total_free_mem"]
+        c_packet["iFreeMemWatermA"] = values["internal_free_mem_watermark"]
+        c_packet["errorPacketsA"] = values["packet_errors"]
+        c_packet["droppedPacketsA"] = values["dropped_packets"]
+        c_packet["rxPacketsA"] = values["rx_packets"]
+        c_packet["txPacketsA"] = values["tx_packets"]
+        c_packet["recordWriteCountA"] = values["record_write_count"]
+        c_packet["localAPIQueriesA"] = values["local_api_queries"]
+        c_packet["uptimeA"] = values["uptime"]
+        c_packet["linkUptimeA"] = values["link_uptime"]
+        c_packet["healthVersionA"] = values["health_version"]
+
 
     return c_packet
 
@@ -1778,6 +1921,8 @@ class DavisConsoleApi(StdService):
         self.wind_found = False
         self.rain_found = False
         self.health_found = False
+        self.airlink_found = False
+        self.airlinkhealth_found = False
         
         self.txid_iss = weeutil.weeutil.to_int(options.get("txid_iss", None))
         if self.txid_iss == None:
@@ -1792,7 +1937,7 @@ class DavisConsoleApi(StdService):
         self.txid_soil = weeutil.weeutil.to_int(options.get("txid_soil", None))
         self.txid_wind = weeutil.weeutil.to_int(options.get("txid_wind", None))
         self.txid_rain = weeutil.weeutil.to_int(options.get("txid_rain", None))
-
+        self.airlink = weeutil.weeutil.to_int(stn_dict.get("airlink", 0))
 
         # get the database parameters we need to function
         binding = options.get("data_binding", "wx_binding")
@@ -1958,6 +2103,8 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
         self.wind_found = False
         self.rain_found = False
         self.health_found = False
+        self.airlink_found = False
+        self.airlinkhealth_found = False
         
         self.txid_iss = weeutil.weeutil.to_int(stn_dict.get("txid_iss", None))
         if self.txid_iss == None:
@@ -1972,7 +2119,7 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
         self.txid_soil = weeutil.weeutil.to_int(stn_dict.get("txid_soil", None))
         self.txid_wind = weeutil.weeutil.to_int(stn_dict.get("txid_wind", None))
         self.txid_rain = weeutil.weeutil.to_int(stn_dict.get("txid_rain", None))
-
+        self.airlink = weeutil.weeutil.to_int(stn_dict.get("airlink", 0))
 
     @property
     def hardware_name(self):

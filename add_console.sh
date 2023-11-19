@@ -163,6 +163,8 @@ sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=windrun
 sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=windSpeed --type=REAL
 sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=windSpeed_2 --type=REAL
 
+sudo echo "y" | wee_database --config=/etc/weewx7/weewx.conf --add-column=windrun_2 --type=REAL
+sudo echo "y" | wee_database --config=/etc/weewx7/weewx.conf --add-column=rssiA --type=REAL
 
 #sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=wetbulb_1 --type=REAL
 #sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=wetbulb_2 --type=REAL	

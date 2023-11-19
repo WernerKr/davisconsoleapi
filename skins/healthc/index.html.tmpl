@@ -21,6 +21,10 @@
 
       <div id="widget_group">
         #include "sensors.inc"
+        #if $latest.rssiA.has_data
+         #include "sensorsair.inc"
+        #end if
+
       </div>
 
       <div id="plot_group">
@@ -73,12 +77,18 @@
             #if $day.rssi7.has_data
             <img src="daysignal1.png"        alt="$obs.label.rssi7"/>
             #end if
+            #if $day.rssi2.has_data
+            <img src="daysignal2.png"        alt="$obs.label.rssi2"/>
+            #end if
             #if $day.supercapVolt.has_data
             <img src="dayvoltSensor0.png"        alt="$obs.labelsupercapVolt"/>
             #end if
 
             #if $day.supercapVolt_2.has_data
             <img src="dayvoltSensor.png"        alt="$obs.labelsupercapVolt_2"/>
+            #end if
+            #if $day.rssiA.has_data
+            <img src="daysignalA.png"        alt="$obs.label.rssiA"/>
             #end if
  
          </div>
@@ -119,6 +129,9 @@
             #if $week.supercapVolt_2.has_data
             <img src="weekvoltSensor.png"        alt="$obs.labelsupercapVolt_2"/>
             #end if
+            #if $week.rssiA.has_data
+            <img src="weeksignalA.png"        alt="$obs.label.rssiA"/>
+            #end if
 
           </div>
           <div id="history_month" class="plot_container" style="display:none">
@@ -158,6 +171,11 @@
             #if $month.supercapVolt_2.has_data
             <img src="monthvoltSensor.png"        alt="$obs.labelsupercapVolt_2"/>
             #end if
+
+            #if $month.rssiA.has_data
+            <img src="monthsignalA.png"        alt="$obs.label.rssiA"/>
+            #end if
+
           </div>
           <div id="history_year" class="plot_container" style="display:none">
             #if $year.consoleBatteryC.has_data
@@ -195,6 +213,9 @@
 
             #if $year.supercapVolt_2.has_data
             <img src="yearvoltSensor.png"        alt="$obs.labelsupercapVolt_2"/>
+            #end if
+            #if $year.rssiA.has_data
+            <img src="yearsignalA.png"        alt="$obs.label.rssiA"/>
             #end if
 
 

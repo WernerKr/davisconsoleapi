@@ -237,6 +237,7 @@ or
   -   [DavisConsoleAPI] api_key = %your api2_key%
   -   [DavisConsoleAPI] api_secret = %your api2_secret%
   -   [DavisConsoleAPI] txid_iss = 1 	and the other stations, if available
+  -   [DavisConsoleAPI] airlink = 0 	set to 1 if also a Airlink Senosr is available
 
 ## Configuration
 By default, the installer installs `davisconsoleapi` as a driver. 
@@ -332,7 +333,9 @@ this driver includes the console health data, so a extra data service isn't anym
     txid_rain = None        # seems that yet not supported by Davis Console
     
     txid_wind = None        # supported ?
-    
+
+    airlink = 0             # is Airlink sensor available? # new in v0.3
+
     packet_log = 0
 
     
@@ -358,7 +361,35 @@ this driver includes the console health data, so a extra data service isn't anym
 #packet_log = 9 -> all current packets
 
 
-#
+## settings for 'user.sunrainduration.SunshineDuration' calculates sunshine duratation and rain duration
+#more information about this extension can you find in 'sunrainduration.py'
+
+#the installer installs this extensions too, but not enabeld, to enable it:
+
+  '[Station]
+  
+    '[[Services]]
+    
+       'process_services = ...,user.sunrainduration.SunshineDuration,'
+       
+
+  '[RadiationDays]			#this are the default settings
+
+    'min_sunshine = 120
+    'sunshine_coeff = 0.95
+    'sunshine_min = 18
+    'sunshine_loop = 1
+    'rainDur_loop = 0
+    'sunshine_log = 0
+    'rainDur_log = 0
+
+    'rain2 = 1			# second Vantage/VUE available, so calculate rain duration
+    'sunshine2 = 0			# second Vantage available, so calculate sunshine duration    
+    'sunshine2_loop = 1
+    'rainDur2_loop = 0
+    'sunshine2_log = 0
+    'rainDur2_log = 0'
+
 
 [Accumulator]
 

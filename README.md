@@ -2,12 +2,12 @@
 Driver for DAVIS Console 6313
 
 Version: 
-0.1 initial release
-0.2 added dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
-0.3 added DAvis Airlink sensor, the Airlink health data are not stored in the database! 
-    if Signal Strenght of the Airlink should be stored in the database, you can extend  the database:
+	0.1 initial release
+	0.2 added dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
+	0.3 added DAvis Airlink sensor, the Airlink health data are not stored in the database! 
+    		if Signal Strenght of the Airlink should be stored in the database, you can extend  the database:
 
-       'sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=rssiA --type=REAL' 
+       		'sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=rssiA --type=REAL' 
 
 
 # weewx-davisconsoleapi

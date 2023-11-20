@@ -2082,6 +2082,7 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
 
         self.max_count = 0
         self.found = False
+        self.firststart = True
 
         self.raininit = False
         self.rain2init = False
@@ -2120,6 +2121,7 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
         self.txid_wind = weeutil.weeutil.to_int(stn_dict.get("txid_wind", None))
         self.txid_rain = weeutil.weeutil.to_int(stn_dict.get("txid_rain", None))
         self.airlink = weeutil.weeutil.to_int(stn_dict.get("airlink", 0))
+
 
     @property
     def hardware_name(self):
@@ -2242,9 +2244,9 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
  
                 record = self.get_data(self)
                 packet = record
-                if (self.packet_log >= 1) and self.ts is not None:
+                if (self.packet_log >= 1 or self.firststart is True) and self.ts is not None:
                    loginf('CurrentData Time {} '.format(weeutil.weeutil.timestamp_to_string(self.ts)))
-                if (self.packet_log >= 1) and self.tshealth is not None:
+                if (self.packet_log >= 1 or self.firststart is True) and self.tshealth is not None:
                    loginf('Health Data Time {} '.format(weeutil.weeutil.timestamp_to_string(self.tshealth)))
 
 
@@ -2252,6 +2254,8 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
 
                 yield packet
                 self.timeout = time.time() + (testtime + 3)
+                if self.ts is not None:
+                     self.firststart = False
 
 # To test this driver, run it directly as follows:
 #   PYTHONPATH=/home/weewx/bin python /home/weewx/bin/user/davisconsoleapi.py

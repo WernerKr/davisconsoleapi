@@ -1,19 +1,13 @@
 # davisconsoleapi
 Driver for DAVIS Console 6313
-
+```
 Version: 
-
 	0.1 initial release
- 
 	0.2 added dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
- 
 	0.3 added DAvis Airlink sensor, the Airlink health data are not stored in the database!
- 
     		if Signal Strenght of the Airlink should be stored in the database, you can extend  the database:
-
        		'sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=rssiA --type=REAL' 
-
-
+```
 # weewx-davisconsoleapi
 Collect and display station information from the new Davis Weatherlink Console 6313 API
 
@@ -64,20 +58,16 @@ current data are each 300 sec (5 min) updated
 and the health data in current packet 
 health data are each 900 sec (15 min) updated
 so 2 times repeated
-
+```
 From DAVIS API2
-
 Example bar data:
-
   "bar_absolute":27.41
   "bar_sea_level":30.248
   "bar_offset":0
   "bar_trend":-0.012
   "ts":1695724800
 
-
 Example inside data:
-
   "temp_in":74.9
   "wet_bulb_in":61.9
   "heat_index_in":74.7
@@ -87,7 +77,6 @@ Example inside data:
   "hum_in":48.4
 
 Example ISS data:
-
   "rx_state":0
   "wind_speed_hi_last_2_min":4
   "hum":64.6
@@ -180,9 +169,7 @@ Example ISS data:
   "ts":1695724800
   "packets_missed_streak":0
 
-
 Example health data
-
   "battery_voltage":4226
   "wifi_rssi":-56
   "console_radio_version":"10.3.2.90"
@@ -212,8 +199,7 @@ Example health data
   "tx_kilobytes":181662
   "battery_temp":33                  it's not known if this is °C or what else (seems to be °C)
   "ts":1695724200
-
-
+```
 ## Skin 
 In this installation there are also skin files (based on the Season skin) for 
     `console`
@@ -221,14 +207,12 @@ In this installation there are also skin files (based on the Season skin) for
 with englisch and german language support files 
 
 ## Installation
+```
 Install the extension:
-
-    `sudo wee_extension --install=weewx-davisconsoleapi.zip`
+    sudo wee_extension --install=weewx-davisconsoleapi.zip
 or
-    `sudo wee_extension --install=weewx-davisconsoleapi.zip --config=/etc/weewx1/weewx.conf`
-
-     After the installation, the weewx.conf file must be adapted:
-     
+    sudo wee_extension --install=weewx-davisconsoleapi.zip --config=/etc/weewx1/weewx.conf
+    After the installation, the weewx.conf file must be adapted:
   -   [Station] station_type = DavisConsoleAPI 
   -   [DataBindings] [[wx_binding]] database = davisconsoleapi_sqlite
   -   [DataBindings] [[wx_binding]] schema = schemas.wview_davisconsoleapi.schema
@@ -238,184 +222,112 @@ or
   -   [DavisConsoleAPI] api_secret = %your api2_secret%
   -   [DavisConsoleAPI] txid_iss = 1 	and the other stations, if available
   -   [DavisConsoleAPI] airlink = 0 	set to 1 if also a Airlink Senosr is available
-
+```
 ## Configuration
 By default, the installer installs `davisconsoleapi` as a driver. 
 It runs during every archive interval and inserts data into the default SQL database.
 
 Example/Settings in the weewx.conf
 #
+```
 [Station]
-
     [[Services]]
-    
         #data_services = user.davisconsolehealthapi.DavisConsoleHealthAPI,
-        
 this driver includes the console health data, so a extra data service isn't anymore necessary
-#
-[StdReport]
 
+[StdReport]
     [[DavisConsole]]
-    
         HTML_ROOT = /var/www/html/weewx
-        
         lang = en
-        
         enable = true
-        
         skin = console
 
-
     [[DavisHealthConsole]]
-    
         HTML_ROOT = /var/www/html/weewx/healthc
-        
         lang = en
-        
         enable = true
-        
         skin = healthc
-        
 
-#
 [DataBindings]
-
     [[wx_binding]]
-    
         database = davisconsoleapi_sqlite
-        
         table_name = archive
-        
         manager = weewx.manager.DaySummaryManager
-        
         schema = schemas.wview_davisconsoleapi.schema
 
-#
 [Databases]
-
     [[davisconsoleapi_sqlite]]
-    
         database_type = SQLite
-        
         database_name = davisconsole.sdb
-        
-#
+
 [DavisConsoleAPI]
-
     driver = user.davisconsoleapi
-    
     station_id = 1?????
-    
     # polling_interval = 300 # hardcoded 5 min 
-    
     api_key = ????????????????????????????????
-    
     api_secret = ????????????????????????????????
-    
     txid_iss = 1
-    
     txid_iss2 = None
-    
     txid_leaf = None
-    
     txid_soil = None
-    
     txid_leaf_soil = None
-    
     txid_extra1 = None      # yet not supported by Davis Console
-    
     txid_extra2 = None      # yet not supported by Davis Console
-    
     txid_extra3 = None      # yet not supported by Davis Console
-    
     txid_extra4 = None      # yet not supported by Davis Console
-    
     txid_rain = None        # seems that yet not supported by Davis Console
-    
     txid_wind = None        # supported ?
-
     airlink = 0             # is Airlink sensor available? # new in v0.3
-
     packet_log = 0
 
-    
-
 #packet_log = 0 -> none logging
-
 #packet_log = 1 -> check new Archive and Rain
-
 #packet_log = 2 -> current console (bar/temp/hum) packets
-
 #packet_log = 3 -> current ISS/VuE packets
-
 #packet_log = 4 -> current leaf soil packets
-
 #packet_log = 5 -> current extra_data1..4 packets
-
 #packet_log = 6 -> current rain and/or wind packets
-
 #packet_log = 7 -> current iss2 or vue2 packets
-
 #packet_log = 8 -> current health packets
-
 #packet_log = 9 -> all current packets
-
 
 ## settings for 'user.sunrainduration.SunshineDuration' calculates sunshine duratation and rain duration
 #more information about this extension can you find in 'sunrainduration.py'
 
 #the installer installs this extensions too, but not enabeld, to enable it:
+  [Station]
+    [[Services]]
+       process_services = ...,user.sunrainduration.SunshineDuration,
 
-  '[Station]
-  
-    '[[Services]]
-    
-       'process_services = ...,user.sunrainduration.SunshineDuration,'
-       
+  [RadiationDays]			#this are the default settings
+    min_sunshine = 120
+    sunshine_coeff = 0.95
+    sunshine_min = 18
+    sunshine_loop = 1
+    rainDur_loop = 0
+    sunshine_log = 0
+    rainDur_log = 0
 
-  '[RadiationDays]			#this are the default settings
-
-    'min_sunshine = 120
-    'sunshine_coeff = 0.95
-    'sunshine_min = 18
-    'sunshine_loop = 1
-    'rainDur_loop = 0
-    'sunshine_log = 0
-    'rainDur_log = 0
-
-    'rain2 = 1			# second Vantage/VUE available, so calculate rain duration
-    'sunshine2 = 0			# second Vantage available, so calculate sunshine duration    
-    'sunshine2_loop = 1
-    'rainDur2_loop = 0
-    'sunshine2_log = 0
-    'rainDur2_log = 0'
-
+    rain2 = 1			# second Vantage/VUE available, so calculate rain duration
+    sunshine2 = 0			# second Vantage available, so calculate sunshine duration    
+    sunshine2_loop = 1
+    rainDur2_loop = 0
+    sunshine2_log = 0
+    rainDur2_log = 0
 
 [Accumulator]
-
    [[consoleRadioVersionC]]
-   
         accumulator = firstlast
-        
         extractor = last
-
         
    [[consoleSwVersionC]]
-   
         accumulator = firstlast
-        
         extractor = last
-        
         
    [[consoleOsVersionC]]
-   
         accumulator = firstlast
-        
         extractor = last
-
-
-
-
+```
 ### API keys
 Once installed, you need to add your Davis WeatherLink Cloud API key, station ID, and secret. 
 To obtain an API key and secret, go to your WeatherLink Cloud account page and look for a button marked "Generate v2 Token." 
@@ -454,42 +366,26 @@ Also the stanza in the weewx.conf
 
 
 Settings for Davis Console skins:
-
+```
         [StdReport]
-        
            [[DavisConsole]]
-           
               #HTML_ROOT = /var/www/html/weewx/console
-              
               lang = en			# or lang = de
-              
               enable = true
-              
               skin = console
-              
 
           [[DavisHealthConsole]]
-          
              HTML_ROOT = /var/www/html/weewx/healthc
-             
              enable = true
-             
              lang = en			# or lang = de
-             
              skin = healthc 
 
-
 In skin.conf (example):
-
         [[[daysignalC]]]
-        
             title = Signal Strength
-            
             yscale = -100.0, -30.0, 10
-            
             [[[[rssiC]]]]
-            
-
+```
 This should give you a result like this:
 
 Take a look at the example files to see how that's been done so you can adapt it for your own purposes.

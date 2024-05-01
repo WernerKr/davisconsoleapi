@@ -15,32 +15,60 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-weewx.conf:
-[RadiationDays]
-    min_sunshine = 120
-    sunshine_coeff = 0.8
-    sunshine_min = 18
-    sunshine_loop = 1
-    rainDur_loop = 0
-    hailDur_loop = 0
-    sunshine_log = 0
-    rainDur_log = 0
-    hailDur_log = 0
 
-    rain2 = 0
-    sunshine2 = 0    
+#sunshine_time 	= Value when sunshine duration is recorded in W/m²
+#sunshineDur	 	= Sunshine duration value in the archive interval in seconds
+#rainDur 		= rain duration value in the archive interval in seconds
+#hailDur 		= rain duration value (Ecowitt-Piezo) in the archive interval in seconds
+#sunshineDur_2 	= Sunshine duration value in the archive interval in seconds for 2. DAVIS station (e.g. live or console)
+#rainDur_2 		= Rain duration value in the archive interval in seconds for 2. DAVIS station (e.g. live or console)
+
+weewx.conf:
+[StdReport]
+ [[Defaults]]
+   [[[Units]]]
+      [[[[Groups]]]]
+          group_deltatime = hour
+
+[RadiationDays]
+    min_sunshine = 120     	# Entry of extension radiationhours.py, if is installed (= limit value)
+    sunshine_coeff = 0.8   	# Factor from which value sunshine is counted - the higher the later
+    sunshine_min = 18     	# below this value (W/m²), sunshine is not taken into account.
+    sunshine_loop = 1      	# use for sunshine loop packet (or archive: sunshine_loop = 0)
+    rainDur_loop = 0       	# use for rain duration loop packet - default is not       
+    hailDur_loop = 0       	# use for piezo-rain duration loop packet - default is not
+    sunshine_log = 0       	# should not be logged when sunshine is recorded
+    rainDur_log = 0       	# no logging for rain duration
+    hailDur_log = 0       	# no logging for piezo-rain duration
+
+    rain2 = 0             	# no rain2 available (Davis Live, Davis Console)
+    sunshine2 = 0           # no shunhine2 available (Davis Live, Davis Console)    
     sunshine2_loop = 1
     rainDur2_loop = 0
     sunshine2_log = 0
     rainDur2_log = 0
 
 
+add_sunrain.sh:
+#!/bin/bash
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=sunshine_time --type=REAL
 
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=sunshineDur --type=REAL
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=rainDur --type=REAL
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=hailDur --type=REAL
+
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=sunshineDur_2 --type=REAL
+sudo echo "y" | wee_database --config=/etc/weewx/weewx.conf --add-column=rainDur_2 --type=REAL
+
+
+
+extension.py:
 import weewx.units
+
 weewx.units.obs_group_dict['sunshine_time'] = 'group_radiation'
 
-weewx.units.obs_group_dict['sunshineDur'] = 'group_deltatime'
-weewx.units.obs_group_dict['rainDur'] = 'group_deltatime'
+#weewx.units.obs_group_dict['sunshineDur'] = 'group_deltatime'
+#weewx.units.obs_group_dict['rainDur'] = 'group_deltatime'
 weewx.units.obs_group_dict['hailDur'] = 'group_deltatime'
 
 weewx.units.obs_group_dict['sunshineDur_2'] = 'group_deltatime'
@@ -55,6 +83,7 @@ weewx.units.obs_group_dict['rainDur_2'] = 'group_deltatime'
 #schema_with_sunshine = schemas.wview_extendedmy.schema + [('sunshineDur_2', 'REAL')]
 #schema_with_sunshine = schemas.wview_extendedmy.schema + [('rainDur_2', 'REAL')]
 
+
 """
 
 import syslog
@@ -62,6 +91,7 @@ from math import sin,cos,pi,asin
 from datetime import datetime
 import time
 import weewx
+import weewx.units
 from weewx.wxengine import StdService
 #import schemas.wview_extendedmy
 
@@ -90,7 +120,7 @@ except ImportError:
 
 
     def logmsg(level, msg):
-        syslog.syslog(level, 'meteotemplate: %s' % msg)
+        syslog.syslog(level, 'sunrainduration: %s' % msg)
 
 
     def logdbg(msg):
@@ -105,8 +135,16 @@ except ImportError:
         logmsg(syslog.LOG_ERR, msg)
 
 DRIVER_NAME = "SunRainDuration"
-DRIVER_VERSION = "0.5"
+DRIVER_VERSION = "0.6"
 
+weewx.units.obs_group_dict['sunshine_time'] = 'group_radiation'
+
+#weewx.units.obs_group_dict['sunshineDur'] = 'group_deltatime'
+#weewx.units.obs_group_dict['rainDur'] = 'group_deltatime'
+weewx.units.obs_group_dict['hailDur'] = 'group_deltatime'
+
+weewx.units.obs_group_dict['sunshineDur_2'] = 'group_deltatime'
+weewx.units.obs_group_dict['rainDur_2'] = 'group_deltatime'
 
 class SunshineDuration(StdService):
     def __init__(self, engine, config_dict):

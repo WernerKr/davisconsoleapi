@@ -51,6 +51,7 @@
 ('pressure','','trend','1'),
 ('cloudbase','','current','1'),
 ('cdd_day','','current','1'),
+('heatdeg','','sum','1'),
 ('- - - - - - - - - - - - - - - - - - - - -','','','3'),
 ('windSpeed','#0000ff','current','1'),
 ('windSpeed','#0000ff','wx_binding3, WS80','0'),
@@ -194,21 +195,21 @@
 ('sunshineDur','#f2a265','deltatime','1'),
 ('GTS','#25ea2f','current','1'),
 ('GTSdate','#25ea2f','day','2'),
-('- - - - - - - - - - - - - - - - - - - - -','','','0'),
-($gettext("Data CO2 Sensor"),'','','0'),
+('- - - - - - - - - - - - - - - - - - - - -','','','3'),
+($gettext("Data Air"),'','current','0'),
 ('co2_Temp','#f20e3c','current','0'),
 ('co2_Hum','#0e25f2','current','0'),
-('co2','#32e5d9','current','0'),
- ('co2_24h','','current','0'),
+('co2','#32e5d9','current','1'),
+ ('co2_24h','','current','1'),
 ('pm2_5','#0e25f2','current','0'),
  ('pm2_5_aqi','','current','0'),
- ('pm2_5','','aqiepa','0'),
- ('pm2_5','','aqieea','0'),
+ ('pm2_5','#0e25f2','aqiepa','0'),
+ ('pm2_5','#0e25f2','aqieea','0'),
  ('pm25_24h_co2','','current','0'),
-('pm10_0','#0e25f2','current','0'),
- ('pm10_24h_co2','','current','0'),
-('- - - - - - - - - - - - - - - - - - - - -','','','3'),
-($gettext("Data Airlink"),'','','3'),
+ ('pm25_24h_co2','','current','1'),
+ ('pm10_24h_co2','','current','1'),
+('- - - - - - - - - - - - - - - - - - - - -','','','0'),
+($gettext("Data Airlink"),'','current','3'),
 ('co2_Temp','#f20e3c','current','1'),
 ('co2_Hum','#0e25f2','current','1'),
 ('dewpoint1','#ea4c12','current','1'),
@@ -232,7 +233,7 @@
 ('pct_pm_data_last_3_hours','','current','1'),
 ('pct_pm_data_last_24_hours','','current','1'),
 ('- - - - - - - - - - - - - - - - - - - - -','#E238EC','','3'),
-($gettext("Data VUE"),'','','3'),
+($gettext("Data VUE"),'','current','3'),
 ('outTemp_2','#e85d0d','current','1'),
 ('outHumidity_2','#82dbf2','current','1'),
 ('heatindex2','#b44242','current','1'),
@@ -250,6 +251,8 @@
  ('windDir_2','#0000ff','current','1'),
 ('windGust_2','#4282b4','current','1'),
 ('windGustDir_2','#4282b4','current','1'),
+ ('windGustSpeed10_2','','current','1'),
+ ('windGustDir10_2','','current','1'),
 ('windrun_2','','day','1'),
 ('rain_2','#72b2c4','current','1'),
 ('rainRate_2','#72b2c4','current','1'),
@@ -272,7 +275,7 @@
 ('radiation_2','','yesterday','0'),
 ('sunshineDur_2','#f2a265','deltatime','1'),
 ('- - - - - - - - - - - - - - - - - - - - -','','','3'),
-($gettext("Data Test"),'','','3'),
+($gettext("Data other"),'','','3'),
 ('outVaporP','','current','1'),
 ('outSVP','','current','1'),
 ('outMixingRatio','','current','1'),
@@ -282,8 +285,8 @@
 ('boilingTemp','','current','1'),
 ]
 
+#set $uselatest = 0
 #set $usefontcolor = 1
-#set $uselatest = 1
 #set $ecowitt = 0
 #for $x in $ecowitt_hw
   #if $x in $station.hardware
@@ -404,11 +407,13 @@
       #set $xt = $getattr($latest, $x[0]) 
       #set $ztx = $ztx+'???'
      #end try
+   #elif $x[2] == 'sum'
+     #set $xt = $getattr($day, $x[0]).sum
    #elif $x[2] == 'day'
      #set $xt = getattr($day, $x[0])
    #elif $x[2] == 'yesterday'
      #set $xt = getattr($yesterday, $x[0])
-   #elif $x[2] == 'aqiepa' or $x[2] == 'aqieea'
+   #elif $x[2] == 'aqiepa' or $x[2] == 'aqieea' 
      #if $uselatest == 1 
       #set $xt = getattr($latest, $x[0])
      #else
@@ -628,10 +633,35 @@
         <td class="data">$xt.gram_per_meter_cubed</td>
         ##<td class="data">$latest.outHumAbs.gram_per_meter_cubed</td>
       </tr>
+    #elif $x[0] == 'heatdeg'
+       #set $xt2 = $xt.raw
+       #if $xt2 == 0 
+         #set $xt = getattr($day, 'cooldeg').sum
+         #set $txt = 'cooldeg'
+        #else 
+         #set $txt = 'heatdeg'
+        #end if 
+      <tr>
+        <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
+        <td class="data">$xt</td>
+      </tr>
+      #set $xt = getattr($day, 'heatdeg').sum.degree_F_day
+      #set $txt = 'heatdeg'
+      <tr>
+        <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
+        <td class="data">$xt</td>
+      </tr>
+      #set $xt = getattr($latest, 'hdd_day')
+      #set $txt = 'hdd_day'
+      <tr>
+        <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
+        <td class="data">$xt°F-day</td>
+      </tr>
     #elif $x[0] == 'cdd_day'
        #set $xt1 = $unit.label.outTemp
        #set $xt2 = $xt.raw
        #if $xt1 == "°F"
+        #set $xt3 = "°F-day"
         #if $xt2 > 0 
          #set $xt = getattr($latest, 'cdd_day')
          #set $txt = 'cdd_day'
@@ -640,6 +670,7 @@
          #set $txt = 'hdd_day'
         #end if
        #else
+        #set $xt3 = "°C-day"
         #if $xt2 > 0 
          #set $xt = getattr($latest, 'cddc_day')
          #set $txt = 'cddc_day'
@@ -650,12 +681,13 @@
        #end if
       <tr>
         <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
-        <td class="data">$xt</td>
+        <td class="data">$xt$xt3</td>
       </tr>
     #elif $x[0] == 'cdd_day_2'
        #set $xt1 = $unit.label.outTemp_2
        #set $xt2 = $xt.raw
        #if $xt1 == "°F"
+        #set $xt3 = "°F-day"
         #if $xt2 > 0 
          #set $xt = getattr($latest, 'cdd_day_2')
          #set $txt = 'cdd_day_2'
@@ -664,6 +696,7 @@
          #set $txt = 'hdd_day_2'
         #end if
        #else
+        #set $xt3 = "°C-day"
         #if $xt2 > 0 
          #set $xt = getattr($latest, 'cddc_day_2')
          #set $txt = 'cddc_day_2'
@@ -674,7 +707,7 @@
        #end if
       <tr>
         <td class="label"><span><font color=$color>$obs.label[$txt]</font></span></td>
-        <td class="data">$xt</td>
+        <td class="data">$xt$xt3</td>
       </tr>
     #else
       <tr>

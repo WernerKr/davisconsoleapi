@@ -95,6 +95,11 @@
             <img src="daytempfeel.png"  alt="$obs.label.feel" />
             <img src="dayhum.png"       alt="$obs.label.outHumidity" />
             <img src="daywind.png"      alt="$obs.label.windSpeed" />
+            <img src="daygust.png"      alt="$obs.label.windGust" />
+            #if $day.windGustSpeed10.has_data
+             <img src="daygust1.png"   alt="$obs.label.windGustSpeed10" />
+            #end if
+
             #if $day.windDir.has_data
              <img src="daywinddir.png"   alt="$obs.label.windDir" />
             #end if
@@ -103,7 +108,9 @@
             #end if
             <img src="daywindvec.png"   alt="$obs.label.windvec" />
             <img src="dayrain.png"      alt="$obs.label.rain" />
+            <img src="dayrain1.png"     alt="$obs.label.rain_2" />
             <img src="dayrainbar.png"      alt="$obs.label.rain" />
+            <img src="dayrainbar1.png"     alt="$obs.label.rain_2" />
             #if $day.UV.has_data
             <img src="dayuv.png"        alt="$obs.label.UV" />
             #end if
@@ -146,6 +153,7 @@
             <img src="weektempfeel.png"  alt="$obs.label.feel" />
             <img src="weekhum.png"       alt="$obs.label.outHumidity" />
             <img src="weekwind.png"      alt="$obs.label.windSpeed" />
+            <img src="weekgust.png"      alt="$obs.label.windGust" />
             <img src="weekwinddir.png"   alt="$obs.label.windDir" />
             <img src="weekwindvec.png"   alt="$obs.label.windvec" />
             <img src="weekrain.png"      alt="$obs.label.rain" />
@@ -324,6 +332,11 @@ $outTemp0_days_table
             <h4>$BootstrapLabels.history_tables.outTemp00_days</h4>
 $outTemp00_days_table
 
+ <h4>$BootstrapLabels.history_tables.sunshineDur</h4>
+$sunshineDur_table
+
+ <h4>$BootstrapLabels.history_tables.rainDur</h4>
+$rainDur_table
 
 ##          <h4>$BootstrapLabels.history_tables.NOAA</h4>
 ##$NOAA_table

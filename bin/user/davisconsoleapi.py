@@ -57,7 +57,7 @@ Settings in weewx.conf:
 [DavisConsoleAPI]
     driver = user.davisconsoleapi
     station_id = 123456
-    # polling_interval = 300 # hardcoded 5 min 
+    polling_interval = 300 # 300 = default minimum 60 sec 
     api_key = abcdefghijklmnopqrstuvwzyx123456
     api_secret = 123456abcdefghijklmnopqrstuvwxyz
     txid_iss = 1
@@ -74,6 +74,7 @@ Settings in weewx.conf:
     airlink = 0 		# Airlink Sensor available?
     packet_log = 0
 
+#packet_log = -1 -> current rain data
 #packet_log = 0 -> none logging
 #packet_log = 1 -> check new Archive and Rain
 #packet_log = 2 -> current console (bar/temp/hum) packets
@@ -160,7 +161,7 @@ except ImportError:
 
 
 DRIVER_NAME = "DavisConsoleAPI"
-DRIVER_VERSION = "0.3"
+DRIVER_VERSION = "0.42"
 
 if weewx.__version__ < "4":
     raise weewx.UnsupportedFeature("weewx 4 is required, found %s" % weewx.__version__)
@@ -466,6 +467,8 @@ weewx.units.obs_group_dict['pm_2p5_last_24_hours'] = 'group_concentration'
 weewx.units.obs_group_dict['pm_10_last_1_hour'] = 'group_concentration'
 weewx.units.obs_group_dict['pm_10_last_3_hours'] = 'group_concentration'
 weewx.units.obs_group_dict['pm_10_last_24_hours'] = 'group_concentration'
+
+weewx.units.default_unit_format_dict["microgram_per_meter_cubed"] = "%.1f"
 
 weewx.units.obs_group_dict['pct_pm_data_nowcast'] = 'group_percent'
 weewx.units.obs_group_dict['pct_pm_data_last_1_hour'] = 'group_percent'
@@ -1202,12 +1205,12 @@ def decode_current_json(data, self):
             #c_packet["rain"] = 0
             if rain_v >= 0:
               c_packet["rain"] = rain_v
-              if (self.packet_log == 1) and rain_v > 0:
+              if (self.packet_log == -1) and rain_v > 0:
                  loginf("rain %.2f mm " % (c_packet["rain"]*25.4))
             else: 
               if (rain_v-test < 0) and  (abs(rain_v) != test):			# -0.8 - 0.2 <0 (=-0.6) and 0.8<>0.2 = 0.6
                  c_packet["rain"] = test
-                 if (self.packet_log == 1) and (c_packet["rain"] > 0): 
+                 if (self.packet_log == -1) and (c_packet["rain"] > 0): 
                     loginf("rainabs  %.2f mm" % (c_packet["rain"]*25.4))
               else:
                  c_packet["rain"] = 0
@@ -1735,12 +1738,12 @@ def decode_current_json(data, self):
 
             if rain2_v >= 0:
               c_packet["rain_2"] = rain2_v
-              if (self.packet_log == 1) and rain2_v > 0:
+              if (self.packet_log == -1) and rain2_v > 0:
                  loginf("rain_2 %.2f mm " % (c_packet["rain_2"]*25.4))
             else: 
               if (rain2_v-test < 0) and  (abs(rain2_v) != test):
                  c_packet["rain_2"] = test
-                 if (self.packet_log == 1) and (c_packet["rain_2"] > 0): 
+                 if (self.packet_log == -1) and (c_packet["rain_2"] > 0): 
                     loginf("rain_2abs  %.2f mm" % (c_packet["rain_2"]*25.4))
               else:
                  c_packet["rain_2"] = 0
@@ -1788,9 +1791,20 @@ def decode_current_json(data, self):
         c_packet['pct_pm_data_nowcast'] = values['pct_pm_data_nowcast']
         c_packet['pct_pm_data_last_24_hours'] = values['pct_pm_data_24_hour']
 
-        c_packet['pm1_0'] = values['pm_1']
-        c_packet['pm2_5'] = values['pm_2p5']
-        c_packet['pm10_0'] = values['pm_10']
+        if values['pm_1'] > 1000:
+           c_packet['pm1_0'] = 999
+        else: 
+           c_packet['pm1_0'] = values['pm_1']
+
+        if values['pm_2p5'] > 1000:
+           c_packet['pm2_5'] = 999
+        else:
+           c_packet['pm2_5'] = values['pm_2p5']
+
+        if values['pm_10'] > 1000:
+           c_packet['pm10_0'] = 999
+        else:
+           c_packet['pm10_0'] = values['pm_10']
 
         c_packet['pm_2p5_last_1_hour'] = values['pm_2p5_1_hour']
         c_packet['pm_2p5_last_3_hours'] = values['pm_2p5_3_hour']
@@ -1887,10 +1901,10 @@ class DavisConsoleApi(StdService):
 
         options = config_dict.get("DavisConsoleAPI", {})
 
-        self.polling_interval = 300  # default = 300
-        #self.polling_interval = weeutil.weeutil.to_int(options.get("polling_interval", 300))
-        #if self.polling_interval < 60:
-        #    self.polling_interval = 60
+        #self.polling_interval = 300  # default = 300
+        self.polling_interval = weeutil.weeutil.to_int(options.get("polling_interval", 300))
+        if self.polling_interval < 60:
+           self.polling_interval = 60
         loginf("polling interval is %s" % self.polling_interval)
 
         self.api_key = options.get("api_key", None)
@@ -2069,10 +2083,10 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
 
         #self.station = Console()
 
-        self.polling_interval = 300  # default = 300
-        #self.polling_interval = weeutil.weeutil.to_int(stn_dict.get("polling_interval", 300))
-        #if self.polling_interval < 300:
-        #    self.polling_interval = 300
+        #self.polling_interval = 300  # default = 300
+        self.polling_interval = weeutil.weeutil.to_int(stn_dict.get("polling_interval", 300))
+        if self.polling_interval < 60:
+           self.polling_interval = 60
         loginf("polling interval is %s" % self.polling_interval)
 
         self.api_key = stn_dict.get("api_key", None)

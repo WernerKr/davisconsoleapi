@@ -46,7 +46,9 @@
             #end if
             #if $day.batteryPercentC.has_data
              #set $test = $getattr($current($max_delta=3600), "batteryPercentC").raw
-             #if $test != 100
+             #set $xt = $getattr($yesterday, 'batteryPercentC') 
+             #set $test1 = $xt.min.format("%.0f")
+             #if $test != 100 or $test1 !='100%'
               <img src="daybatteryPercentConsole.png"        alt="$obs.label.batteryPercentC"/>
              #end if
             #end if
@@ -96,6 +98,15 @@
             #if $week.consoleBatteryC.has_data
             <img src="weekvoltConsole.png"        alt="$obs.label.consoleBatteryC"/>
             #end if
+            #if $week.batteryPercentC.has_data
+             #set $test = $getattr($current($max_delta=3600), "batteryPercentC").raw
+             #set $xt = $getattr($week, 'batteryPercentC') 
+             #set $test1 = $xt.min.format("%.0f")
+             #if $test != 100 or $test1 !='100%'
+              <img src="weekbatteryPercentConsole.png"        alt="$obs.label.batteryPercentC"/>
+             #end if
+            #end if
+
             #if $week.rssiC.has_data
             <img src="weeksignalC.png"        alt="$obs.label.rssiC"/>
             #end if
@@ -138,6 +149,15 @@
             #if $month.consoleBatteryC.has_data
             <img src="monthvoltConsole.png"        alt="$obs.label.consoleBatteryC"/>
             #end if
+            #if $month.batteryPercentC.has_data
+             #set $test = $getattr($current($max_delta=3600), "batteryPercentC").raw
+             #set $xt = $getattr($month, 'batteryPercentC') 
+             #set $test1 = $xt.min.format("%.0f")
+             #if $test != 100 or $test1 !='100%'
+              <img src="monthbatteryPercentConsole.png"        alt="$obs.label.batteryPercentC"/>
+             #end if
+            #end if
+
             #if $month.rssiC.has_data
             <img src="monthsignalC.png"        alt="$obs.label.rssiC"/>
             #end if
@@ -180,6 +200,14 @@
           <div id="history_year" class="plot_container" style="display:none">
             #if $year.consoleBatteryC.has_data
             <img src="yearvoltConsole.png"        alt="$obs.label.consoleBatteryC"/>
+            #end if
+            #if $year.batteryPercentC.has_data
+             #set $test = $getattr($current($max_delta=3600), "batteryPercentC").raw
+             #set $xt = $getattr($month, 'batteryPercentC') 
+             #set $test1 = $xt.min.format("%.0f")
+             #if $test != 100 or $test1 !='100%'
+              <img src="yearbatteryPercentConsole.png"        alt="$obs.label.batteryPercentC"/>
+             #end if
             #end if
             #if $year.rssiC.has_data
             <img src="yearsignalC.png"        alt="$obs.label.rssiC"/>

@@ -20,15 +20,16 @@ Collect and display station information from the new Davis Weatherlink Console 6
 Weewx driver that pulls sensor information from Davis Instruments Weatherlink Console 6313. 
 I made this extension for users like me who have the new DAVIS Weatherlink Console 6313. 
 
-The code makes one API calls each 300 sec (5 min) = archive period: 
+The code makes one API calls each 300 sec (5 min) = archive period = default or what set in weewx.conf (Minimum 60 seconds): 
 to the "current" v2 API. 
 
 The data are stored in their own database, since most of the fields don't exist within the default weewx database. 
 
 Please note: This driver don't pull from the "Historic Data" API2, which 
-requires a paid monthly subscription from Davis to use (starting at about $4/month). 
+requires a paid monthly subscription from Davis to use (starting at about $4/month = Pro, Pro+ = about $9/month). 
 
-See here: https://weatherlink.github.io/v2-api/data-permissions
+See here: https://weatherlink.github.io/v2-api/data-permissions and
+          https://www.davisinstruments.com/pages/weatherlink-cloud
 
 # You should know:
 - only from a Vantage VUE you can get data for 
@@ -59,11 +60,11 @@ to your prefered setting
 Right now, the driver records all the information from the Davis Console API2,
 whereas the 
 
-current data are each 300 sec (5 min) updated 
+current data are each 300 sec (5 min) or what set in weewx.conf updated 
 
 and the health data in current packet 
 health data are each 900 sec (15 min) updated
-so 2 times repeated
+so 2 times or more repeated
 ```
 From DAVIS API2
 Example bar data:
@@ -269,7 +270,7 @@ this driver includes the console health data, so a extra data service isn't anym
 [DavisConsoleAPI]
     driver = user.davisconsoleapi
     station_id = 1?????
-    # polling_interval = 300 # hardcoded 5 min 
+    polling_interval = 300 # minimum 60 sec 
     api_key = ????????????????????????????????
     api_secret = ????????????????????????????????
     txid_iss = 1
@@ -286,6 +287,7 @@ this driver includes the console health data, so a extra data service isn't anym
     airlink = 0             # is Airlink sensor available? # new in v0.3
     packet_log = 0
 
+#packet_log = -1 -> only current rain data
 #packet_log = 0 -> none logging
 #packet_log = 1 -> check new Archive and Rain
 #packet_log = 2 -> current console (bar/temp/hum) packets

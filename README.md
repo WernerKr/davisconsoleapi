@@ -216,9 +216,12 @@ with englisch and german language support files
 ## Installation
 ```
 Install the extension:
-    sudo wee_extension --install=weewx-davisconsoleapi.zip
+    sudo wee_extension --install=weewx-davisconsoleapi.zip   #V4
+    sudo weectl extension install weewx-davisconsoleapi.zip  #V5
 or
-    sudo wee_extension --install=weewx-davisconsoleapi.zip --config=/etc/weewx1/weewx.conf
+    sudo wee_extension --install=weewx-davisconsoleapi.zip --config=/etc/weewx1/weewx.conf #V4
+    sudo weectl extension install weewx-davisconsoleapi.zip --config=/etc/weewx/weewx.conf #V5
+
     After the installation, the weewx.conf file must be adapted:
   -   [Station] station_type = DavisConsoleAPI 
   -   [DataBindings] [[wx_binding]] database = davisconsoleapi_sqlite

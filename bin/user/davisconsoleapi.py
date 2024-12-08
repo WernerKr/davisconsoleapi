@@ -19,9 +19,15 @@ weewx module that records information from a Davis Console weather station using
 the v2 API.
 
 version:
-01 initial release
-02 add dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
-03 add DAvis Airlink senosr, the Airlink health data are not stored in the database! 
+0.1  initial release
+0.2  add dewpoint1, heatindex1, wetbulb1 for second Vantage/VUE
+0.3  add DAvis Airlink sensor, the Airlink health data are not stored in the database! 
+0.41 changed default_unit_format_dict["microgram_per_meter_cubed"] to "%.1f" (default was former "%.0f")
+0.42 added windGustSpeed10 and windGustSpeed10_2 to database schema
+     or manually add to database: V5: 'sudo weectl database add-column windGustSpeed10 --type=REAL -y' 
+     The "polling_interval" can now be changed in the weewx.conf. Default value = 300 seconds, minimum value = 60 seconds,
+     but a corresponding subscription to DAVIS is required0.
+0.43 added sleep(10) in main packet loop -> rienkdejong
 
 Settings in weewx.conf:
 
@@ -57,7 +63,7 @@ Settings in weewx.conf:
 [DavisConsoleAPI]
     driver = user.davisconsoleapi
     station_id = 123456
-    polling_interval = 300 # 300 = default minimum 60 sec 
+    polling_interval = 300 # minimum 60 sec 
     api_key = abcdefghijklmnopqrstuvwzyx123456
     api_secret = 123456abcdefghijklmnopqrstuvwxyz
     txid_iss = 1
@@ -74,7 +80,7 @@ Settings in weewx.conf:
     airlink = 0 		# Airlink Sensor available?
     packet_log = 0
 
-#packet_log = -1 -> current rain data
+#packet_log = -1 -> only current rain
 #packet_log = 0 -> none logging
 #packet_log = 1 -> check new Archive and Rain
 #packet_log = 2 -> current console (bar/temp/hum) packets
@@ -161,7 +167,7 @@ except ImportError:
 
 
 DRIVER_NAME = "DavisConsoleAPI"
-DRIVER_VERSION = "0.42"
+DRIVER_VERSION = "0.43"
 
 if weewx.__version__ < "4":
     raise weewx.UnsupportedFeature("weewx 4 is required, found %s" % weewx.__version__)

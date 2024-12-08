@@ -2238,7 +2238,7 @@ class DavisConsoleAPIDriver(weewx.drivers.AbstractDevice):
 
         
         while True:
-            
+              time.sleep(10)
               while (self.timeout < time.time()):
 
                 now = int(time.time() + 0.5)

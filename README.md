@@ -13,6 +13,8 @@ Version:
              changed default_unit_format_dict["microgram_per_meter_cubed"] to "%.1f" (default was "%.0f")
              The "polling_interval" can now be changed in the weewx.conf. Default value = 300 seconds, minimum value = 60 seconds,
              but a corresponding subscription to DAVIS is required
+        0.43 added sleep(10) in main packet loop -> rienkdejong
+
 ```
 # weewx-davisconsoleapi
 Collect and display station information from the new Davis Weatherlink Console 6313 API

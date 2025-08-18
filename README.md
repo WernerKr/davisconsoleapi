@@ -42,6 +42,8 @@ If the current console data are not more updated (values flatlined), you need to
   Unplug the USB cable, and then insert a paper clip in to the hole labeled P (indicated as Power Off Access) 
   for 10 seconds pressing the button inside.
   -> is 'Power off' the Console -> Screen is than black!
+  
+<img width="600" height="480" alt="WL Console Reset" src="https://github.com/user-attachments/assets/11bb889a-3c01-4d92-81c8-cc09b64e9055" />
 
 
 ## Update from davisconsolehealthapi

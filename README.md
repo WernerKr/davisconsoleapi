@@ -27,7 +27,7 @@ to the "current" v2 API.
 
 The data are stored in their own database, since most of the fields don't exist within the default weewx database. 
 
-Please note: This driver don't pull from the "Historic Data" API2, which 
+Please note: This extension don't pull from the "Historic Data" API2, which 
 requires a paid monthly subscription from Davis to use (starting at about $4/month = Pro, Pro+ = about $9/month). 
 
 See here: https://weatherlink.github.io/v2-api/data-permissions and
@@ -61,7 +61,7 @@ to your prefered setting
 
 
 ## Data
-Right now, the driver records all the information from the Davis Console API2,
+Right now, this extension records all the information from the Davis Console API2,
 whereas the 
 
 current data are each 300 sec (5 min) or what set in weewx.conf updated 

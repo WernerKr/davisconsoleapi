@@ -1,5 +1,5 @@
 # davisconsoleapi
-Driver for DAVIS Console 6313
+WeeWx extensions for DAVIS Console 6313
 ```
 Version: 
 	0.1 initial release
@@ -19,7 +19,7 @@ Version:
 # weewx-davisconsoleapi
 Collect and display station information from the new Davis Weatherlink Console 6313 API
 
-Weewx driver that pulls sensor information from Davis Instruments Weatherlink Console 6313. 
+Weewx extension that pulls sensor information from Davis Instruments Weatherlink Console 6313. 
 I made this extension for users like me who have the new DAVIS Weatherlink Console 6313. 
 
 The code makes one API calls each 300 sec (5 min) = archive period = default or what set in weewx.conf (Minimum 60 seconds): 
@@ -47,8 +47,8 @@ If the current console data are not more updated (values flatlined), you need to
 
 
 ## Update from davisconsolehealthapi
-If you would like to use the data from davisconsolehealthapi: This driver includes the function (Health Data) of the davisconsolehealthapi extension.
-Copy the database file from the davisconsolehealthapi driver: 
+If you would like to use the data from davisconsolehealthapi: This extension includes the function (Health Data) of the davisconsolehealthapi extension.
+Copy the database file from the davisconsolehealthapi extension: 
 'davisconsolehealthapi.sdb'
 to the here used database:
 'davisconsole.sdb'
@@ -238,7 +238,7 @@ or
   -   [DavisConsoleAPI] airlink = 0 	set to 1 if also a Airlink Senosr is available
 ```
 ## Configuration
-By default, the installer installs `davisconsoleapi` as a driver. 
+By default, the installer installs `davisconsoleapi` as a extension. 
 It runs during every archive interval and inserts data into the default SQL database.
 
 Example/Settings in the weewx.conf
@@ -247,7 +247,7 @@ Example/Settings in the weewx.conf
 [Station]
     [[Services]]
         #data_services = user.davisconsolehealthapi.DavisConsoleHealthAPI,
-this driver includes the console health data, so a extra data service isn't anymore necessary
+this extension includes the console health data, so a extra data service isn't anymore necessary
 
 [StdReport]
     [[DavisConsole]]
@@ -365,11 +365,11 @@ Enter that number into weewx.conf and you should be good to go.
        v2 API URL: Historic (only availabe with paid subscription from Davis) so here not supported!
 
 ## Database schema
-This driver uses it's own database schema
+This extension uses it's own database schema
 `wview_davisconsoleapi.py`
 
 ## Usage
-Once you enable the driver and get it running, you won't notice anything different. 
+Once you enable the extension and get it running, you won't notice anything different. 
 
 ### Own skin console and healthc
 The files for this new skin (additional to the Seasons skin) are found under 

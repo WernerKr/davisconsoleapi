@@ -19,6 +19,10 @@ Version:
 # weewx-davisconsoleapi
 Collect and display station information from the new Davis Weatherlink Console 6313 API
 
+### This extension only works if you send the data from your Davis console 6313 to the Davis Cloud. 
+
+It can then retrieve that data and bring it back to your computer for further processing.
+
 Weewx extension that pulls sensor information from Davis Instruments Weatherlink Console 6313. 
 I made this extension for users like me who have the new DAVIS Weatherlink Console 6313. 
 
